@@ -33,23 +33,23 @@ services:
   #   ports:
   #     - "${SWAGGER_UI_PORT:-9000}:8080"
 
-  # frontend:
-  #   build:
-  #     context: ./frontend
-  #     dockerfile: Dockerfile
-  #   expose:
-  #     - "8000"
-  #     - "9229"
-  #   ports:
-  #     - "8000:8000"
-  #     - "9229:9229"
-  #   env_file:
-  #     - ./frontend/.env
-  #   volumes:
-  #     - ./frontend:/usr/src/app
-  #     - ./frontend/node_modules:/usr/src/app/node_modules
-  #   # command: bash -c "yarn build && yarn start"
-  #   command: bash -c "yarn dev"
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    expose:
+      - "8000"
+      - "9229"
+    ports:
+      - "8000:3000"
+      - "9229:9229"
+    env_file:
+      - ./frontend/.env
+    volumes:
+      - ./frontend:/usr/src/app
+      - ./frontend/node_modules:/usr/src/app/node_modules
+    # command: bash -c "yarn build && yarn start"
+    command: bash -c "yarn dev"
 
 volumes:
   bundle:
