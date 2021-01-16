@@ -1,0 +1,56 @@
+version: '3'
+services:
+  db:
+    image: mysql:5.7.23
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - mysql_data:/var/lib/mysql
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    command: bash -c "rm -rf /app/tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
+    volumes:
+      - ./backend:/app
+      - bundle:/usr/local/bundle/
+    depends_on:
+      - db
+    env_file:
+      - ./backend/.env
+    tty: true
+    stdin_open: true
+  # swagger:
+  #   image: swaggerapi/swagger-ui
+  #   environment:
+  #     - API_URL=/swagger/openapi.yml
+  #   volumes:
+  #     - ./backend/swagger:/usr/share/nginx/html/swagger
+  #   ports:
+  #     - "${SWAGGER_UI_PORT:-9000}:8080"
+
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile
+  #   expose:
+  #     - "8000"
+  #     - "9229"
+  #   ports:
+  #     - "8000:8000"
+  #     - "9229:9229"
+  #   env_file:
+  #     - ./frontend/.env
+  #   volumes:
+  #     - ./frontend:/usr/src/app
+  #     - ./frontend/node_modules:/usr/src/app/node_modules
+  #   # command: bash -c "yarn build && yarn start"
+  #   command: bash -c "yarn dev"
+
+volumes:
+  bundle:
+  mysql_data:
