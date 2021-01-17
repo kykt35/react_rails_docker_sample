@@ -1,0 +1,114 @@
+openapi: 3.0.1
+info:
+  title: react rails docker sample API
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000/api/v1
+    description: Local server
+tags:
+  - name: Article
+    description: 記事
+
+paths:
+  /articles:
+    get:
+      tags:
+        - Article
+      summary: 記事一覧
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetArticlesResponse"
+
+  /articles/{article_id}:
+    get:
+      tags:
+        - Article
+      summary: 記事詳細
+      parameters:
+        - in: path
+          name: article_id
+          description: article ID
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetArticleByIdResponse"
+        400:
+          description: bad request error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestError"
+
+components:
+  schemas:
+    Article:
+      type: object
+      required:
+        - id
+        - title
+        - description
+      properties:
+        id:
+          type: integer
+          format: int32
+          example: 1
+        title:
+          type: string
+          example: "タイトル"
+        description:
+          type: string
+          example: "本文"
+
+    GetArticlesResponse:
+      type: object
+      required:
+        - shops
+      properties:
+        shops:
+          type: array
+          items:
+            $ref: "#/components/schemas/Article"
+    GetArticleByIdResponse:
+      type: object
+      required:
+        - shop
+      properties:
+        shop:
+          $ref: "#/components/schemas/Article"
+
+    ApiError:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              example: "api_error"
+            message:
+              type: string
+              example: "api error"
+    BadRequestError:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              example: "bad_request_error"
+            message:
+              type: string
+              example: "bad request error."

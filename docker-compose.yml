@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 services:
   db:
     image: mysql:5.7.23
@@ -24,14 +24,25 @@ services:
       - ./backend/.env
     tty: true
     stdin_open: true
-  # swagger:
-  #   image: swaggerapi/swagger-ui
-  #   environment:
-  #     - API_URL=/swagger/openapi.yml
-  #   volumes:
-  #     - ./backend/swagger:/usr/share/nginx/html/swagger
-  #   ports:
-  #     - "${SWAGGER_UI_PORT:-9000}:8080"
+
+  swagger:
+    image: swaggerapi/swagger-ui
+    environment:
+      - API_URL=/swagger/openapi.yml
+    volumes:
+      - ./backend/swagger:/usr/share/nginx/html/swagger
+    ports:
+      - "${SWAGGER_UI_PORT:-9000}:8080"
+
+  prism:
+    image: stoplight/prism:3
+    command: mock -h 0.0.0.0 /swagger/openapi.yml
+    volumes:
+      - ./backend/swagger:/swagger
+    ports:
+      - 4010:4010
+    expose:
+      - "4010"
 
   frontend:
     build:
